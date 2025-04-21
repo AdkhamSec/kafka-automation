@@ -9,6 +9,15 @@ PARTITION=""
 REPLICATION_FACTOR=""
 ROLE=""
 
+KAFKA_BIN="/usr/local/kafka-server/bin"
+# KAFKA_BIN="/home/adkhamsec/Documents/projects/kafka-server/bin"
+KAFKA_URL="https://dlcdn.apache.org/kafka/4.0.0/kafka_2.13-4.0.0.tgz"
+KAFKA_DIR="usr/local/kafka-server"
+# KAFKA_DIR="/home/adkhamsec/Documents/projects/kafka-server"
+KAFKA_TAR="kafka_2.13-4.0.0.tgz"
+
+KAFKA_USERS_FILE="./kafka-users.txt"
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -h|--help)
@@ -66,17 +75,6 @@ while [[ $# -gt 0 ]]; do
       ;;
   esac
 done
-
-# Variables
-KAFKA_BIN="/usr/local/kafka-server/bin"
-# KAFKA_BIN="/home/adkhamsec/Documents/projects/kafka-server/bin"
-KAFKA_URL="https://dlcdn.apache.org/kafka/4.0.0/kafka_2.13-4.0.0.tgz"
-KAFKA_DIR="usr/local/kafka-server"
-# KAFKA_DIR="/home/adkhamsec/Documents/projects/kafka-server"
-KAFKA_TAR="kafka_2.13-4.0.0.tgz"
-
-KAFKA_USERS_FILE="./kafka-users.txt"
-
 
 # Function to check if the given IP address and port is reachable with telnet
 check_broker_accessibility() {
