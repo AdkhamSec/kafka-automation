@@ -93,8 +93,7 @@ check_broker_accessibility() {
 # Function to check if a user is in the file
 check_user() {
     local input_user="$1"
-    grep -q "^${input_user}:" "$KAFKA_USERS_FILE"
-    return $?
+    grep -q "^[[:space:]]*user_${input_user}=" "$KAFKA_USERS_FILE"
 }
 
 # Function to append the user to the KafkaServer section

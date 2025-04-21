@@ -11,7 +11,8 @@ KafkaServer {
    user_dxsh="xxx"
    user_talim="password"
    user_newuser="password"
-   user_adkhamsec="6hUfSIoe";
+   user_adkhamsec="6hUfSIoe"
+   user_mirkamol="hZbc33Uy";
 };
 
 KafkaClient {
