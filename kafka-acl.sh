@@ -132,17 +132,9 @@ read -p "For what user should I create the topic? " USERNAME
 if ! check_user "$USERNAME"; then
     echo "User '$USERNAME' not found in KafkaServer section. Creating user automatically..."
     PASSWORD=$(generate_password)
+    # Append the new user to KafkaServer section
     append_user "$USERNAME" "$PASSWORD"
-else
-    echo "User '$USERNAME' already exists in JAAS config. Skipping creation."
 fi
-
-# if ! check_user "$USERNAME"; then
-#     echo "User '$USERNAME' not found in KafkaServer section. Creating user automatically..."
-#     PASSWORD=$(generate_password)
-#     # Append the new user to KafkaServer section
-#     append_user "$USERNAME" "$PASSWORD"
-# fi
 
 read -p "What topic should I create? " TOPIC_NAME
 
