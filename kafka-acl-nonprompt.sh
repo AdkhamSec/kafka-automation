@@ -67,18 +67,6 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-# Debug output (optional)
-echo "Broker: $BROKER"
-echo "Port: $PORT"
-echo "Username: $USERNAME"
-echo "Topic: $TOPIC"
-echo "Partition: $PARTITION"
-echo "Replication Factor: $REPLICATION_FACTOR"
-echo "Role: $ROLE"
-
-# Main script
-#!/bin/bash
-
 # Variables
 KAFKA_BIN="/usr/local/kafka-server/bin"
 # KAFKA_BIN="/home/adkhamsec/Documents/projects/kafka-server/bin"
@@ -207,7 +195,7 @@ check_broker_accessibility "$BROKER_IP" "$BROKER_PORT"
 check_kafka_cli_tools
 
 
-# Ask for a username and validate it
+# Username validation
 USERNAME="$USERNAME"
 
 if ! check_user "$USERNAME"; then
