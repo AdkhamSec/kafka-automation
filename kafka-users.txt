@@ -11,12 +11,8 @@ KafkaServer {
    user_dxsh="xxx"
    user_talim="password"
    user_newuser="password"
-   user_adkahmsec="8QNnnBis"
-   user_jamshid="1vgUYLh7"
-   user_Maksim="71NsIPBP"
-   user_testadk="gjt1wD2F"
-   user_mirkamol="tYAxyMnF";
-}
+   user_adkhamsec="6hUfSIoe";
+};
 
 KafkaClient {
     org.apache.kafka.common.security.plain.PlainLoginModule required
