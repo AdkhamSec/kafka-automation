@@ -1,0 +1,20 @@
+KafkaServer {
+   org.apache.kafka.common.security.plain.PlainLoginModule required
+   username="xxx"
+   password="xxx"
+   user_controller="xxx"
+   user_admin="xxx"
+   user_dmbat="xxx"
+   user_subsidiya="xxx"
+   user_uzasbo="xxx"
+   user_xizsafar="xxx"
+   user_dxsh="xxx"
+   user_talim="password"
+   user_newuser="password"
+   user_adkahmsec="8QNnnBis"
+   user_jamshid="1vgUYLh7";
+}
+
+KafkaClient {
+    org.apache.kafka.common.security.plain.PlainLoginModule required
+    user_admin="xxx";
