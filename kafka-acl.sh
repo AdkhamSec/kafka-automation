@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Variables
-# KAFKA_BIN="/usr/local/kafka-server/bin"
-KAFKA_BIN="/home/adkhamsec/Documents/projects/kafka-server/bin"
+KAFKA_BIN="/usr/local/kafka-server/bin"
+# KAFKA_BIN="/home/adkhamsec/Documents/projects/kafka-server/bin"
 KAFKA_URL="https://dlcdn.apache.org/kafka/4.0.0/kafka_2.13-4.0.0.tgz"
-# KAFKA_DIR="usr/local/kafka-server"
-KAFKA_DIR="/home/adkhamsec/Documents/projects/kafka-server"
+KAFKA_DIR="usr/local/kafka-server"
+# KAFKA_DIR="/home/adkhamsec/Documents/projects/kafka-server"
 KAFKA_TAR="kafka_2.13-4.0.0.tgz"
 
 KAFKA_USERS_FILE="./kafka-users.txt"
@@ -75,23 +75,6 @@ append_user() {
 }
 
 
-# append_user() {
-#     local input_user="$1"
-#     local input_password="$2"
-#     # Append the user to the KafkaServer section in the file
-#     echo "Appending user '$input_user' to the KafkaServer section..."
-
-#     # Removing the semicolon from the last user in the KafkaServer section
-#     sed -i '/KafkaServer {/ {n; :a; N; $!ba; s/\(user_[^=]*=[^;]*\);/\1/}' "$KAFKA_USERS_FILE"
-
-#     # Append the new user with semicolon to the inside of the KafkaServer inside the {} at the last line
-#     sed -i "/KafkaServer {/a \   user_${input_user}=\"${input_password}\";" "$KAFKA_USERS_FILE"
-#     echo "User '$input_user' added to KafkaServer section with password '$input_password'." 
-
-#     # echo "    user_${input_user}=\"${input_password}\";" >> "$KAFKA_USERS_FILE"
-#     # echo "User '$input_user' added to KafkaServer section with password '$input_password'."
-# }
-
 # Function to generate an 8-character alphanumeric password
 generate_password() {
     tr -dc 'A-Za-z0-9' < /dev/urandom | head -c 8
@@ -132,25 +115,14 @@ check_kafka_cli_tools() {
     fi
 }
 
-# if [ ! -f "$KAFKA_BIN/kafka-topics.sh" ] || [ ! -f "$KAFKA_BIN/kafka-acls.sh" ]; then
-#     echo "Kafka CLI tools not found in $KAFKA_BIN. Please ensure kafka-topics.sh and kafka-acls.sh are in the directory."
-#     exit 1
-# else
-#     echo "Kafka CLI tools found in $KAFKA_BIN."
-# fi
-
-# if ! command -v kafka-topics.sh >/dev/null 2>&1 || ! command -v kafka-acls.sh >/dev/null 2>&1; then
-#     echo "Kafka CLI tools not found. Please ensure kafka-topics.sh and kafka-acls.sh are in your PATH."
-#     exit 1
-# fi
 
 # Broker IP and port
 
 read -p "Please geve the IP address of the broker " BROKER_IP
 read -p "Please give PORT number of the broker " BROKER_PORT
 
-# # Check if the Kafka broker is reachable
-# check_broker_accessibility "$BROKER_IP" "$BROKER_PORT"
+# Check if the Kafka broker is reachable
+check_broker_accessibility "$BROKER_IP" "$BROKER_PORT"
 
 # Check if Kafka CLI tools are installed
 check_kafka_cli_tools
@@ -165,15 +137,6 @@ if ! check_user "$USERNAME"; then
     # Append the new user to KafkaServer section
     append_user "$USERNAME" "$PASSWORD"
 fi
-
-# if ! check_user "$USERNAME"; then
-#     echo "User '$USERNAME' not found. Creating user automatically..."
-#     PASSWORD=$(generate_password)
-#     echo "${USERNAME}:${PASSWORD}" >> "$KAFKA_USERS_FILE"
-#     echo "User '$USERNAME' created with the following credentials:"
-#     echo "    Username: $USERNAME"
-#     echo "    Password: $PASSWORD"
-# fi
 
 read -p "What topic should I create? " TOPIC_NAME
 
