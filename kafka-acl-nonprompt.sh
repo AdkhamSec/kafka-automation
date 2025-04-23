@@ -238,7 +238,7 @@ else
         --command-config "$KAFKA_SECRETS_FILE"
 fi
 
-$KAFKA_BIN/kafka-acls.sh --bootstrap-server "$BROKER_IP":"$BROKER_PORT" \
+$KAFKA_BIN/kafka-acls.sh --bootstrap-server "$BROKER_IP:$BROKER_PORT" \
   --add \
   --allow-principal "User:$USERNAME" \
   --topic "$TOPIC_NAME" \

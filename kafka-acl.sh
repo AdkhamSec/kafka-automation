@@ -185,7 +185,7 @@ else
         --topic "$TOPIC_NAME" \
         --partitions "$PARTITIONS" \
         --replication-factor "$REPLICATION" \
-        --bootstrap-server "$BROKER_IP":"$BROKER_PORT" \
+        --bootstrap-server "$BROKER_IP:$BROKER_PORT" \
         --command-config "$KAFKA_SECRETS_FILE"
 fi
 
