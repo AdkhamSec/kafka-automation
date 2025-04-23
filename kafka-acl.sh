@@ -4,11 +4,12 @@
 KAFKA_BIN="/usr/local/kafka-server/bin"
 # KAFKA_BIN="/home/adkhamsec/Documents/projects/kafka-server/bin"
 KAFKA_URL="https://dlcdn.apache.org/kafka/4.0.0/kafka_2.13-4.0.0.tgz"
-KAFKA_DIR="usr/local/kafka-server"
+KAFKA_DIR="/usr/local/kafka-server"
 # KAFKA_DIR="/home/adkhamsec/Documents/projects/kafka-server"
 KAFKA_TAR="kafka_2.13-4.0.0.tgz"
 
 KAFKA_USERS_FILE="./kafka-users.txt"
+KAFKA_SECRETS_FILE="./kafka-secrets.txt"
 
 
 # Function to check if the given IP address and port is reachable with telnet
@@ -113,11 +114,21 @@ check_kafka_cli_tools() {
     fi
 }
 
+# Function to check if the topic already exists
 
-# Broker IP and port
+is_topic_exists() {
+    local topic_name="$1"
+    $KAFKA_BIN/kafka-topics.sh --list --bootstrap-server "$BROKER_IP:$BROKER_PORT" --command-config "$KAFKA_SECRETS_FILE" | grep -q "^$topic_name$"
+}
 
-read -p "Please geve the IP address of the broker " BROKER_IP
-read -p "Please give PORT number of the broker " BROKER_PORT
+# Broker IP and port 
+# Pass IP address and port as one argument
+
+read -p "Please give the IP address and port of the broker (e.g. x.x.x.x:9092) " BROKER
+
+# Split the input into BROKER_IP and BROKER_PORT
+BROKER_IP=$(echo "$BROKER" | cut -d':' -f1)
+BROKER_PORT=$(echo "$BROKER" | cut -d':' -f2)
 
 # Check if the Kafka broker is reachable
 check_broker_accessibility "$BROKER_IP" "$BROKER_PORT"
@@ -127,7 +138,7 @@ check_kafka_cli_tools
 
 
 # Ask for a username and validate it
-read -p "For what user should I create the topic? " USERNAME
+read -p "For what USER should I create the topic? " USERNAME
 
 if ! check_user "$USERNAME"; then
     echo "User '$USERNAME' not found in KafkaServer section. Creating user automatically..."
@@ -136,11 +147,12 @@ if ! check_user "$USERNAME"; then
     append_user "$USERNAME" "$PASSWORD"
 fi
 
+# Input topic name and validate the topic name form the server if exists give a message that topic already exists and update rest of the topic
 read -p "What topic should I create? " TOPIC_NAME
 
 read -p "How many partitions should I create for this topic? " PARTITIONS
 
-read -p "What should be the replication factor for this topic? " REPLLICATION
+read -p "What should be the replication factor for this topic? " REPLICATION
 
 echo "What role to produce?"
 echo "1. Producer"
@@ -164,16 +176,23 @@ esac
 
 
 # Create the topic using Kafka CLI
-echo "Creating Kafka topic '$TOPIC_NAME' with $PARTITIONS partitions and replication factor $REPLLICATION..."
 
-$KAFKA_BIN/kafka-topics.sh --create \
-    --topic "$TOPIC_NAME" \
-    --partitions "$PARTITIONS" \
-    --replication-factor "$REPLLICATION" \
-    --bootstrap-server "$BROKER_IP:$BROKER_PORT"
+if is_topic_exists "$TOPIC_NAME"; then
+    echo "Topic '$TOPIC_NAME' already exists. Skipping creation."
+else
+    echo "Creating Kafka topic '$TOPIC_NAME' with $PARTITIONS partitions and replication factor $REPLICATION..."
 
-$KAFKA_BIN/kafka-acls.sh --bootstrap-server "$BROK  ER_IP:$BROKER_PORT" \
+    $KAFKA_BIN/kafka-topics.sh --create \
+        --topic "$TOPIC_NAME" \
+        --partitions "$PARTITIONS" \
+        --replication-factor "$REPLICATION" \
+        --bootstrap-server "$BROKER_IP:$BROKER_PORT" \
+        --command-config "$KAFKA_SECRETS_FILE"
+fi
+
+$KAFKA_BIN/kafka-acls.sh --bootstrap-server "$BROKER_IP:$BROKER_PORT" \
   --add \
   --allow-principal "User:$USERNAME" \
   --topic "$TOPIC_NAME" \
-  $PERMISSIONS
+  $PERMISSIONS \
+  --command-config "$KAFKA_SECRETS_FILE"
