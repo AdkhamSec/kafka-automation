@@ -121,7 +121,6 @@ is_topic_exists() {
     $KAFKA_BIN/kafka-topics.sh --list --bootstrap-server "$BROKER_IP:$BROKER_PORT" --command-config "$KAFKA_SECRETS_FILE" | grep -q "^$topic_name$"
 }
 
-# Broker IP and port 
 # Pass IP address and port as one argument
 
 read -p "Please give the IP address and port of the broker (e.g. x.x.x.x:9092) " BROKER

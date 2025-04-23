@@ -17,13 +17,13 @@ KAFKA_DIR="/usr/local/kafka-server"
 KAFKA_TAR="kafka_2.13-4.0.0.tgz"
 
 KAFKA_USERS_FILE="./kafka-users.txt"
+KAFKA_SECRETS_FILE="./kafka-secrets.txt"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -h|--help)
       echo "Usage: $0 [OPTIONS]
-  -b   Broker IP address
-  -bp  Broker port
+  -b   Broker IP address and port number (e.g. 192.168.1.100:9092)
   -u   Username
   -t   Topic name
   -p   Number of partitions
@@ -34,10 +34,8 @@ while [[ $# -gt 0 ]]; do
       ;;
     -b)
       BROKER="$2"
-      shift 2
-      ;;
-    -bp)
-      PORT="$2"
+      BROKER_IP=$(echo "$BROKER" | cut -d':' -f1)
+      BROKER_PORT=$(echo "$BROKER" | cut -d':' -f2)
       shift 2
       ;;
     -u)
@@ -179,11 +177,10 @@ check_kafka_cli_tools() {
     fi
 }
 
-
-# Broker IP and port
-
-BROKER_IP="$BROKER"
-BROKER_PORT="$PORT"
+is_topic_exists() {
+    local topic_name="$1"
+    $KAFKA_BIN/kafka-topics.sh --list --bootstrap-server "$BROKER_IP:$BROKER_PORT" --command-config "$KAFKA_SECRETS_FILE" | grep -q "^$topic_name$"
+}
 
 # Check if the Kafka broker is reachable
 check_broker_accessibility "$BROKER_IP" "$BROKER_PORT"
@@ -206,7 +203,7 @@ TOPIC_NAME="$TOPIC"
 
 PARTITIONS="$PARTITION"
 
-REPLLICATION="$REPLICATION_FACTOR"
+REPLICATION="$REPLICATION_FACTOR"
 
 echo "What role to produce?"
 echo "1. Producer"
@@ -228,18 +225,38 @@ case $ROLE_CHOICE in
         ;;
 esac
 
+if is_topic_exists "$TOPIC_NAME"; then
+    echo "Topic '$TOPIC_NAME' already exists. Skipping creation."
+else
+    echo "Creating Kafka topic '$TOPIC_NAME' with $PARTITIONS partitions and replication factor $REPLICATION..."
 
-# Create the topic using Kafka CLI
-echo "Creating Kafka topic '$TOPIC_NAME' with $PARTITIONS partitions and replication factor $REPLLICATION..."
+    $KAFKA_BIN/kafka-topics.sh --create \
+        --topic "$TOPIC_NAME" \
+        --partitions "$PARTITIONS" \
+        --replication-factor "$REPLICATION" \
+        --bootstrap-server "$BROKER_IP:$BROKER_PORT" \
+        --command-config "$KAFKA_SECRETS_FILE"
+fi
 
-$KAFKA_BIN/kafka-topics.sh --create \
-    --topic "$TOPIC_NAME" \
-    --partitions "$PARTITIONS" \
-    --replication-factor "$REPLLICATION" \
-    --bootstrap-server "$BROKER_IP:$BROKER_PORT"
-
-$KAFKA_BIN/kafka-acls.sh --bootstrap-server "$BROK  ER_IP:$BROKER_PORT" \
+$KAFKA_BIN/kafka-acls.sh --bootstrap-server "$BROKER_IP:$BROKER_PORT" \
   --add \
   --allow-principal "User:$USERNAME" \
   --topic "$TOPIC_NAME" \
-  $PERMISSIONS
+  $PERMISSIONS \
+  --command-config "$KAFKA_SECRETS_FILE"
+
+
+# # Create the topic using Kafka CLI
+# echo "Creating Kafka topic '$TOPIC_NAME' with $PARTITIONS partitions and replication factor $REPLICATION..."
+
+# $KAFKA_BIN/kafka-topics.sh --create \
+#     --topic "$TOPIC_NAME" \
+#     --partitions "$PARTITIONS" \
+#     --replication-factor "$REPLICATION" \
+#     --bootstrap-server "$BROKER_IP:$BROKER_PORT"
+
+# $KAFKA_BIN/kafka-acls.sh --bootstrap-server "$BROK  ER_IP:$BROKER_PORT" \
+#   --add \
+#   --allow-principal "User:$USERNAME" \
+#   --topic "$TOPIC_NAME" \
+#   $PERMISSIONS

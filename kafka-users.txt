@@ -12,7 +12,8 @@ KafkaServer {
    user_talim="password"
    user_newuser="password"
    user_adkhamsec="6hUfSIoe"
-   user_mirkamol="hZbc33Uy";
+   user_mirkamol="hZbc33Uy"
+   user_saodat="1XM9utEo";
 };
 
 KafkaClient {
