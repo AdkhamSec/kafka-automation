@@ -13,7 +13,9 @@ KafkaServer {
    user_newuser="password"
    user_adkhamsec="6hUfSIoe"
    user_mirkamol="hZbc33Uy"
-   user_saodat="1XM9utEo";
+   user_saodat="1XM9utEo"
+   user_abbos="QSnwI9AA"
+   user_bexruz="eKLMI0MV";
 };
 
 KafkaClient {
