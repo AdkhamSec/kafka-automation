@@ -28,7 +28,7 @@ while [[ $# -gt 0 ]]; do
   -t   Topic name
   -p   Number of partitions
   -rf  Replication factor
-  -r   Role (producer/consumer)
+  -r   Role (1 | producer   /   2 | consumer)
   -h   Show this help message"
       exit 0
       ;;
