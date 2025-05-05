@@ -205,9 +205,6 @@ PARTITIONS="$PARTITION"
 
 REPLICATION="$REPLICATION_FACTOR"
 
-echo "What role to produce?"
-echo "1. Producer"
-echo "2. Consumer"
 ROLE_CHOICE="$ROLE"
 
 case $ROLE_CHOICE in
